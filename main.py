@@ -143,6 +143,7 @@ def submit_feedback(
     feedback = Feedback(
         rating=rating,
         review=review,
+        ai_response=ai_result["user_response"],
         ai_summary=ai_result["summary"],
         ai_action=ai_result["action"]
     )
@@ -158,6 +159,7 @@ def submit_feedback(
             "ai_response": ai_result["user_response"]
         }
     )
+
 
 
 
