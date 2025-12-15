@@ -19,7 +19,20 @@ engine = create_engine(
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
+os.makedirs("/data", exist_ok=True)
 
+class Feedback(Base):
+    __tablename__ = "feedback"
+
+    id = Column(Integer, primary_key=True, index=True)
+    rating = Column(Integer)
+    review = Column(Text)
+    ai_response = Column(Text)
+    ai_summary = Column(Text)
+    ai_action = Column(Text)
+
+
+Base.metadata.create_all(bind=engine)
 
 from google import genai
 import os
@@ -145,6 +158,7 @@ def submit_feedback(
             "ai_response": ai_result["user_response"]
         }
     )
+
 
 
 
