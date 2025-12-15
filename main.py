@@ -45,8 +45,6 @@ def read_all_feedback():
         reader = csv.DictReader(f)
         return list(reader)
 
-from google import genai
-import os
 
 client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
@@ -106,6 +104,9 @@ ADMIN_ACTION:
 
 
 app = FastAPI(title="Two-Dashboard AI Feedback System")
+
+templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/", response_class=HTMLResponse)
 def health_check(request: Request):
