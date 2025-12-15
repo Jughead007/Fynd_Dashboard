@@ -24,6 +24,10 @@ Base = declarative_base()
 from google import genai
 import os
 
+print("GEMINI_API_KEY exists:", bool(os.getenv("GEMINI_API_KEY")))
+if not os.getenv("GEMINI_API_KEY"):
+    raise RuntimeError("GEMINI_API_KEY not found")
+
 client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
 
@@ -118,10 +122,10 @@ def submit_feedback(
     rating: int = Form(...),
     review: str = Form(...)
 ):
-    # 1️⃣ Call mock AI
+   
     ai_result = generate_ai_outputs(review, rating)
 
-    # 2️⃣ Save everything to DB
+    
     db = SessionLocal()
     feedback = Feedback(
         rating=rating,
@@ -133,7 +137,7 @@ def submit_feedback(
     db.commit()
     db.close()
 
-    # 3️⃣ Show AI response to user
+   
     return templates.TemplateResponse(
         "thank_you.html",
         {
@@ -141,6 +145,7 @@ def submit_feedback(
             "ai_response": ai_result["user_response"]
         }
     )
+
 
 
 
