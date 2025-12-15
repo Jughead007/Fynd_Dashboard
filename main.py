@@ -3,11 +3,13 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi import Form
 
-
-from sqlalchemy import create_engine, Column, Integer, String, Text
+import os
+from sqlalchemy import create_engine, Column, Integer, Text
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "sqlite:///./feedback.db"
+
+DB_PATH = os.getenv("DB_PATH", "/data/feedback.db")
+DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(
     DATABASE_URL,
@@ -15,19 +17,9 @@ engine = create_engine(
 )
 
 SessionLocal = sessionmaker(bind=engine)
-
 Base = declarative_base()
 
-class Feedback(Base):
-    __tablename__ = "feedback"
 
-    id = Column(Integer, primary_key=True, index=True)
-    rating = Column(Integer)
-    review = Column(Text)
-    ai_summary = Column(Text, nullable=True)
-    ai_action = Column(Text, nullable=True)
-
-Base.metadata.create_all(bind=engine)
 
 from google import genai
 import os
@@ -149,5 +141,6 @@ def submit_feedback(
             "ai_response": ai_result["user_response"]
         }
     )
+
 
 
