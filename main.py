@@ -1,3 +1,19 @@
+import atexit
+
+@atexit.register
+def cleanup():
+    logger.info("Application shutting down")
+
+# Test database connection on startup
+try:
+    db = SessionLocal()
+    db.execute("SELECT 1")
+    db.close()
+    logger.info("Database connection successful")
+except Exception as e:
+    logger.error(f"Database connection failed: {e}")
+
+
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -159,6 +175,7 @@ def submit_feedback(
             "ai_response": ai_result["user_response"]
         }
     )
+
 
 
 
