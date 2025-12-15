@@ -32,7 +32,7 @@ Base.metadata.create_all(bind=engine)
 from google import genai
 import os
 
-client = genai.Client(api_key=os.getenv('GOOGL_API_KEY'))
+client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
 
 def generate_ai_outputs(review: str, rating: int):
@@ -149,4 +149,5 @@ def submit_feedback(
             "ai_response": ai_result["user_response"]
         }
     )
+
 
