@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You | Fynd</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        .bg-gradient-1 {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-gradient-2 {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 56px 48px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3),
+                        0 0 1px rgba(255, 255, 255, 0.2) inset;
+            animation: slideUp 0.6s ease-out;
+            text-align: center;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Success checkmark animation */
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+
+        .success-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            position: relative;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+        }
+
+        .checkmark path {
+            stroke: white;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.5s ease-out 0.3s forwards;
+        }
+
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Sparkle effects */
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #fbbf24;
+            border-radius: 50%;
+            animation: sparkle 1s ease-out forwards;
+        }
+
+        .sparkle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0.5s; }
+        .sparkle:nth-child(2) { top: 20%; right: 15%; animation-delay: 0.6s; }
+        .sparkle:nth-child(3) { bottom: 15%; left: 25%; animation-delay: 0.7s; }
+        .sparkle:nth-child(4) { bottom: 20%; right: 20%; animation-delay: 0.8s; }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .logo {
+            width: 120px;
+            height: 40px;
+            margin: 0 auto 32px;
+            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f0f23;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* AI Response Box */
+        .ai-response-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-response-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #3b82f6, #10b981);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .ai-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6366f1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .ai-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+        }
+
+        .ai-response-text {
+            font-size: 16px;
+            color: #1e293b;
+            line-height: 1.7;
+            text-align: left;
+        }
+
+        .empty-response {
+            color: #94a3b8;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6366f1;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            background: #f8fafc;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #6366f1;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .card {
+                padding: 40px 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient-1"></div>
+    <div class="bg-gradient-2"></div>
+
+    <div class="container">
+        <div class="card">
+            <!-- Success Icon -->
+            <div class="success-icon">
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="success-circle">
+                    <svg class="checkmark" viewBox="0 0 52 52">
+                        <path d="M14 27 l8 8 l16 -16" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="logo">FYND</div>
+
+            <h1>Thank You for Your Feedback!</h1>
+            <p class="subtitle">
+                We truly appreciate you taking the time to share your thoughts with us. 
+                Your feedback helps us improve and serve you better.
+            </p>
+
+            <!-- AI Response Section -->
+            <div class="ai-response-box">
+                <div class="ai-label">
+                    <span class="ai-icon">✨</span>
+                    AI Response
+                </div>
+                <div class="ai-response-text">
+                    {% if ai_response %}
+                        {{ ai_response }}
+                    {% else %}
+                        <span class="empty-response">
+                            We're processing your feedback with our AI. You'll receive a personalized response via email shortly!
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/user" class="btn btn-primary">
+                    <span>📝</span>
+                    Submit Another Review
+                </a>
+                <a href="https://www.fynd.com/" class="btn btn-secondary" target="_blank">
+                    <span>🏠</span>
+                    Visit Fynd
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p class="footer-text">
+                    Your feedback is valuable and helps us build better experiences for everyone.
+                </p>
+                <div class="social-links">
+                    <a href="https://www.fynd.com/" class="social-link" target="_blank" title="Website">🌐</a>
+                    <a href="#" class="social-link" title="Twitter">🐦</a>
+                    <a href="#" class="social-link" title="LinkedIn">💼</a>
+                    <a href="#" class="social-link" title="Email">✉️</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add subtle animation on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide success animation after viewing
+            setTimeout(() => {
+                const sparkles = document.querySelectorAll('.sparkle');
+                sparkles.forEach(sparkle => {
+                    sparkle.style.display = 'none';
+                });
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .feedback-table {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .feedback-table h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .filter-btn.active {
+            background: #764ba2;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .rating-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .rating-5 { background: #10b981; color: white; }
+        .rating-4 { background: #3b82f6; color: white; }
+        .rating-3 { background: #f59e0b; color: white; }
+        .rating-2 { background: #ef4444; color: white; }
+        .rating-1 { background: #991b1b; color: white; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: border 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: rotate(180deg) scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Admin Dashboard</h1>
+            <p>Monitor and analyze customer feedback in real-time</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Feedback</h3>
+                <div class="number" id="totalFeedback">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Average Rating</h3>
+                <div class="number" id="avgRating">0.0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Reviews</h3>
+                <div class="number" id="pendingReviews">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Processed</h3>
+                <div class="number" id="processedReviews">0</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <h2>Rating Distribution</h2>
+                <canvas id="ratingChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>Processing Status</h2>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <div class="feedback-table">
+            <h2>Recent Feedback</h2>
+            
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search reviews...">
+            
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterTable('all')">All</button>
+                <button class="filter-btn" onclick="filterTable('5')">⭐⭐⭐⭐⭐</button>
+                <button class="filter-btn" onclick="filterTable('4')">⭐⭐⭐⭐</button>
+                <button class="filter-btn" onclick="filterTable('3')">⭐⭐⭐</button>
+                <button class="filter-btn" onclick="filterTable('2')">⭐⭐</button>
+                <button class="filter-btn" onclick="filterTable('1')">⭐</button>
+                <button class="filter-btn" onclick="filterTable('pending')">Pending</button>
+            </div>
+
+            <table id="feedbackTable">
+                <thead>
+                    <tr>
+                        <th>Rating</th>
+                        <th>Review</th>
+                        <th>AI Summary</th>
+                        <th>AI Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in feedbacks %}
+                    <tr data-rating="{{ f.rating }}" data-status="{% if f.ai_summary %}completed{% else %}pending{% endif %}">
+                        <td>
+                            <span class="rating-badge rating-{{ f.rating }}">{{ f.rating }} ⭐</span>
+                        </td>
+                        <td>{{ f.review }}</td>
+                        <td>
+                            {% if f.ai_summary %}
+                                {{ f.ai_summary }}
+                            {% else %}
+                                <span class="status-badge status-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if f.ai_action %}
+                                <span class="status-badge status-completed">{{ f.ai_action }}</span>
+                            {% else %}
+                                <span class="status-badge status-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="location.reload()" title="Refresh Dashboard">↻</button>
+
+    <script>
+        // Calculate statistics
+        const rows = document.querySelectorAll('#feedbackTable tbody tr');
+        const totalFeedback = rows.length;
+        let totalRating = 0;
+        let pendingCount = 0;
+        let processedCount = 0;
+        const ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+
+        rows.forEach(row => {
+            const rating = parseInt(row.dataset.rating);
+            const status = row.dataset.status;
+            
+            totalRating += rating;
+            ratingCounts[rating]++;
+            
+            if (status === 'pending') {
+                pendingCount++;
+            } else {
+                processedCount++;
+            }
+        });
+
+        // Update stat cards
+        document.getElementById('totalFeedback').textContent = totalFeedback;
+        document.getElementById('avgRating').textContent = totalFeedback > 0 ? (totalRating / totalFeedback).toFixed(1) : '0.0';
+        document.getElementById('pendingReviews').textContent = pendingCount;
+        document.getElementById('processedReviews').textContent = processedCount;
+
+        // Rating Distribution Chart
+        const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+        new Chart(ratingCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
+                datasets: [{
+                    label: 'Number of Reviews',
+                    data: [ratingCounts[1], ratingCounts[2], ratingCounts[3], ratingCounts[4], ratingCounts[5]],
+                    backgroundColor: [
+                        '#991b1b',
+                        '#ef4444',
+                        '#f59e0b',
+                        '#3b82f6',
+                        '#10b981'
+                    ],
+                    borderRadius: 8,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Processed', 'Pending'],
+                datasets: [{
+                    data: [processedCount, pendingCount],
+                    backgroundColor: ['#10b981', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Filter functionality
+        function filterTable(filter) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter rows
+            rows.forEach(row => {
+                if (filter === 'all') {
+                    row.style.display = '';
+                } else if (filter === 'pending') {
+                    row.style.display = row.dataset.status === 'pending' ? '' : 'none';
+                } else {
+                    row.style.display = row.dataset.rating === filter ? '' : 'none';
+                }
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
